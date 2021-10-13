@@ -13,6 +13,7 @@ public class ClientStr {
     String stringaRicevutaDalServer;
     DataOutputStream outVersoServer;
     BufferedReader inDalServer;
+    boolean isStopped = false;
 
     public Socket connetti(){
         System.out.println("2 CLIENT partito in esecuzione ...");
@@ -33,6 +34,14 @@ public class ClientStr {
         return miosocket;
     }
 
+    public void run(){
+        try{
+            comunica();
+        }catch (Exception e) {
+            
+        }
+    }
+
     public void comunica(){
         for(;;)
         try{
@@ -44,9 +53,13 @@ public class ClientStr {
 
             stringaRicevutaDalServer = inDalServer.readLine();
             System.out.println("7 ... risposta dal server " + '\n' + stringaRicevutaDalServer);
-            if(stringaUtente.equals("FINE")){
+            if(stringaUtente.equals("FINE") || stringaUtente.equals("STOP")){
+                if(isStopped){
+                    break;
+                }
                 System.out.println("8 CLIENT: termina elaborazione e chiude connessione");
                 miosocket.close();
+                isStopped = true;
                 break;
             }
         }catch(Exception e){
